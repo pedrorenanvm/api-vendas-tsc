@@ -1,7 +1,7 @@
 import { getCustomRepository} from 'typeorm'
-import {ProductsRepository} from '../typeorm/repositories/ProductsRepository'
+import {ProductsRepository} from '../infra/typeorm/repositories/ProductsRepository'
 import AppError from '@shared/errors/AppError';
-import Product from '../typeorm/entities/Product';
+import Product from '../infra/typeorm/entities/Product';
 
 // interface para abstrair os dados do request 
 interface IRequest{
