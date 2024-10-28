@@ -4,7 +4,8 @@ import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
 import UsersRepository from '../infra/typeorm/repositories/UsersRepository';
 import User from '../infra/typeorm/entities/User';
-import { compare } from 'bcryptjs';
+import { inject } from 'tsyringe';
+import { IHashProvider } from '../providers/HashProvider/models/IHashProvider';
 
 
 // interface para abstrair os dados do request 
@@ -21,6 +22,13 @@ interface IResponse{
 // Criação do service de criação de produtos
 class CreateSessionsService{
 
+    constructor(
+
+        @inject('HashProvider')
+        private hashProvider: IHashProvider
+    ){}
+
+
     public async execute({ email, password}: IRequest):Promise<IResponse>{
         
         const usersRepository = getCustomRepository(UsersRepository)
@@ -31,7 +39,7 @@ class CreateSessionsService{
             throw new AppError('Incorrect email/password combination.',401);
         }
 
-        const passwordConfirmed = await compare(password, user.password);
+        const passwordConfirmed = await this.hashProvider.compareHash(password, user.password);
 
 
         if(!passwordConfirmed){
